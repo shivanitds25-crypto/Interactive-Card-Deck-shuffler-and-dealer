@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Interactive Card Deck Shuffler & Dealer</title>
+
+<style>
+
+/* =========================
+   BASIC PAGE
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #141e30, #243b55);
+    color: white;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+    color: #00e5ff;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #ddd;
+    margin-bottom: 25px;
+}
+
+
+/* =========================
+   PANELS
+========================= */
+
+.panel {
+    background: rgba(255,255,255,0.10);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+
+/* =========================
+   CONTROLS
+========================= */
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+label {
+    font-weight: bold;
+}
+
+select {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 15px;
+}
+
+button {
+    padding: 11px 17px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+.shuffle {
+    background: #00bcd4;
+    color: white;
+}
+
+.deal {
+    background: #00e676;
+    color: black;
+}
+
+.draw {
+    background: #ffd740;
+    color: black;
+}
+
+.return {
+    background: #ff9800;
+    color: white;
+}
+
+.winnerBtn {
+    background: #e040fb;
+    color: white;
+}
+
+.reset {
+    background: #f44336;
+    color: white;
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.stat {
+    text-align: center;
+    background: rgba(0,0,0,0.25);
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.stat h2 {
+    color: #00e5ff;
+    margin: 0;
+    font-size: 30px;
+}
+
+.stat p {
+    margin-bottom: 0;
+    color: #ddd;
+}
+
+
+/* =========================
+   DECK
+========================= */
+
+.deck-section {
+    text-align: center;
+}
+
+.deck {
+    width: 120px;
+    height: 170px;
+    margin: 20px auto;
+    border-radius: 15px;
+
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #1565c0,
+            #1565c0 10px,
+            #0d47a1 10px,
+            #0d47a1 20px
+        );
+
+    border: 5px solid white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 55px;
+
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.emptyDeck {
+    opacity: 0.3;
+}
+
+
+/* =========================
+   PLAYER HANDS
+========================= */
+
+.hands {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 15px;
+}
+
+.player {
+    background: rgba(0,0,0,0.25);
+    padding: 15px;
+    border-radius: 15px;
+    min-height: 160px;
+}
+
+.player h3 {
+    color: #ffd740;
+    margin-top: 0;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.card {
+    width: 55px;
+    height: 75px;
+    background: white;
+    color: black;
+
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 20px;
+    font-weight: bold;
+
+    box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+
+    animation: cardAppear 0.3s ease;
+}
+
+.red {
+    color: red;
+}
+
+.black {
+    color: black;
+}
+
+@keyframes cardAppear {
+
+    from {
+        transform: scale(0.5) rotate(10deg);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+
+}
+
+
+/* =========================
+   WINNER
+========================= */
+
+#winner {
+    text-align: center;
+    font-size: 20px;
+    color: #00e676;
+    font-weight: bold;
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+.history {
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.history p {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 7px;
+    margin: 0;
+    color: #ddd;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:700px) {
+
+    .stats {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    button,
+    select {
+        width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h1>🃏 Interactive Card Deck</h1>
+
+<p class="subtitle">
+Shuffle • Deal • Draw • Return • Find Highest Card
+</p>
+
+
+<!-- =========================
+     CONTROLS
+========================= -->
+
+<div class="panel">
+
+<div class="controls">
+
+<label>Players:</label>
+
+<select id="playersSelect">
+
+<option value="2">2 Players</option>
+<option value="3">3 Players</option>
+<option value="4">4 Players</option>
+<option value="5">5 Players</option>
+<option value="6">6 Players</option>
+
+</select>
+
+
+<label>Cards Per Player:</label>
+
+<select id="cardsSelect">
+
+<option value="1">1 Card</option>
+<option value="2">2 Cards</option>
+<option value="3">3 Cards</option>
+<option value="4">4 Cards</option>
+<option value="5">5 Cards</option>
+
+</select>
+
+
+<button class="shuffle" id="shuffleBtn">
+🔀 Shuffle
+</button>
+
+
+<button class="deal" id="dealBtn">
+🎴 Deal Cards
+</button>
+
+
+<button class="draw" id="drawBtn">
+➕ Draw Card
+</button>
+
+
+<button class="return" id="returnBtn">
+↩️ Return Cards
+</button>
+
+
+<button class="winnerBtn" id="winnerBtn">
+🏆 Find Highest
+</button>
+
+
+<button class="reset" id="resetBtn">
+🔄 Reset
+</button>
+
+</div>
+
+</div>
+
+
+
+<!-- =========================
+     STATISTICS
+========================= -->
+
+<div class="panel">
+
+<div class="stats">
+
+<div class="stat">
+
+<h2 id="remaining">
+52
+</h2>
+
+<p>Remaining</p>
+
+</div>
+
+
+<div class="stat">
+
+<h2 id="dealt">
+0
+</h2>
+
+<p>Dealt</p>
+
+</div>
+
+
+<div class="stat">
+
+<h2 id="playerNumber">
+2
+</h2>
+
+<p>Players</p>
+
+</div>
+
+
+<div class="stat">
+
+<h2 id="roundNumber">
+0
+</h2>
+
+<p>Round</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =========================
+     DECK
+========================= -->
+
+<div class="panel deck-section">
+
+<h2>🂠 Current Deck</h2>
+
+<div id="deck" class="deck">
+🂠
+</div>
+
+<p id="deckMessage">
+52 cards available
+</p>
+
+</div>
+
+
+
+<!-- =========================
+     PLAYERS
+========================= -->
+
+<div class="panel">
+
+<h2>👥 Player Hands</h2>
+
+<br>
+
+<div id="hands" class="hands"></div>
+
+</div>
+
+
+
+<!-- =========================
+     WINNER
+========================= -->
+
+<div class="panel">
+
+<h2>🏆 Highest Card Result</h2>
+
+<br>
+
+<div id="winner">
+No result yet.
+</div>
+
+</div>
+
+
+
+<!-- =========================
+     HISTORY
+========================= -->
+
+<div class="panel">
+
+<h2>📜 Activity History</h2>
+
+<br>
+
+<div id="history" class="history">
+
+<p>Game started with 52 cards.</p>
+
+</div>
+
+<br>
+
+<button class="reset" id="clearBtn">
+Clear History
+</button>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   CARD INFORMATION
+===================================================== */
+
+const suits = ["♠", "♥", "♦", "♣"];
+
+const ranks = [
+    "A",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "J",
+    "Q",
+    "K"
+];
+
+
+/* =====================================================
+   GAME VARIABLES
+===================================================== */
+
+let deck = [];
+
+let players = [];
+
+let round = 0;
+
+
+/* =====================================================
+   GET HTML ELEMENTS
+===================================================== */
+
+const playersSelect =
+    document.getElementById("playersSelect");
+
+const cardsSelect =
+    document.getElementById("cardsSelect");
+
+const shuffleBtn =
+    document.getElementById("shuffleBtn");
+
+const dealBtn =
+    document.getElementById("dealBtn");
+
+const drawBtn =
+    document.getElementById("drawBtn");
+
+const returnBtn =
+    document.getElementById("returnBtn");
+
+const winnerBtn =
+    document.getElementById("winnerBtn");
+
+const resetBtn =
+    document.getElementById("resetBtn");
+
+const clearBtn =
+    document.getElementById("clearBtn");
+
+
+/* =====================================================
+   CREATE 52 CARD DECK
+===================================================== */
+
+function createDeck() {
+
+    deck = [];
+
+    for (let suit of suits) {
+
+        for (let rank of ranks) {
+
+            deck.push({
+                suit: suit,
+                rank: rank
+            });
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   CREATE PLAYERS
+===================================================== */
+
+function createPlayers() {
+
+    const number =
+        Number(playersSelect.value);
+
+    players = [];
+
+    for (let i = 0; i < number; i++) {
+
+        players.push({
+            name: "Player " + (i + 1),
+            hand: []
+        });
+
+    }
+
+}
+
+
+/* =====================================================
+   SHUFFLE FUNCTION
+===================================================== */
+
+function shuffleDeck() {
+
+    if (deck.length === 0) {
+
+        alert("Deck is empty. Press Reset.");
+
+        return;
+
+    }
+
+
+    for (let i = deck.length - 1; i > 0; i--) {
+
+        const random =
+            Math.floor(Math.random() * (i + 1));
+
+        const temp = deck[i];
+
+        deck[i] = deck[random];
+
+        deck[random] = temp;
+
+    }
+
+
+    addHistory("🔀 Deck shuffled successfully.");
+
+    updateScreen();
+
+}
+
+
+/* =====================================================
+   DEAL FUNCTION
+===================================================== */
+
+function dealCards() {
+
+    const numberOfPlayers =
+        Number(playersSelect.value);
+
+    const cardsPerPlayer =
+        Number(cardsSelect.value);
+
+    const totalCards =
+        numberOfPlayers * cardsPerPlayer;
+
+
+    /* Check enough cards */
+
+    if (deck.length < totalCards) {
+
+        alert(
+            "Not enough cards! There are only " +
+            deck.length +
+            " cards remaining."
+        );
+
+        return;
+
+    }
+
+
+    /* Create fresh players */
+
+    createPlayers();
+
+
+    /* Deal cards */
+
+    for (let i = 0; i < cardsPerPlayer; i++) {
+
+        for (let j = 0; j < players.length; j++) {
+
+            players[j].hand.push(
+                deck.pop()
+            );
+
+        }
+
+    }
+
+
+    round++;
+
+
+    addHistory(
+        "🎴 " +
+        totalCards +
+        " cards dealt to " +
+        numberOfPlayers +
+        " players."
+    );
+
+
+    document.getElementById("winner").innerText =
+        "Click 'Find Highest' to check the highest card.";
+
+
+    updateScreen();
+
+}
+
+
+/* =====================================================
+   DRAW CARD
+===================================================== */
+
+function drawCard() {
+
+    if (deck.length === 0) {
+
+        alert("No cards left in the deck!");
+
+        return;
+
+    }
+
+
+    /* If players don't exist */
+
+    if (players.length === 0) {
+
+        createPlayers();
+
+    }
+
+
+    const card = deck.pop();
+
+
+    /* Give card to Player 1 */
+
+    players[0].hand.push(card);
+
+
+    addHistory(
+        "➕ Player 1 drew " +
+        card.rank +
+        card.suit
+    );
+
+
+    updateScreen();
+
+}
+
+
+/* =====================================================
+   RETURN CARDS
+===================================================== */
+
+function returnCards() {
+
+    let count = 0;
+
+
+    for (let player of players) {
+
+        while (player.hand.length > 0) {
+
+            const card =
+                player.hand.pop();
+
+            deck.push(card);
+
+            count++;
+
+        }
+
+    }
+
+
+    if (count === 0) {
+
+        alert("There are no cards in player hands.");
+
+        return;
+
+    }
+
+
+    addHistory(
+        "↩️ " +
+        count +
+        " cards returned to deck."
+    );
+
+
+    document.getElementById("winner").innerText =
+        "No result yet.";
+
+
+    updateScreen();
+
+}
+
+
+/* =====================================================
+   CARD VALUE
+===================================================== */
+
+function getCardValue(rank) {
+
+    if (rank === "A") {
+        return 14;
+    }
+
+    if (rank === "K") {
+        return 13;
+    }
+
+    if (rank === "Q") {
+        return 12;
+    }
+
+    if (rank === "J") {
+        return 11;
+    }
+
+    return Number(rank);
+
+}
+
+
+/* =====================================================
+   FIND HIGHEST CARD
+===================================================== */
+
+function findHighestCard() {
+
+    let highestValue = 0;
+
+    let winners = [];
+
+
+    /* Check every player's cards */
+
+    for (let player of players) {
+
+        for (let card of player.hand) {
+
+            const value =
+                getCardValue(card.rank);
+
+
+            if (value > highestValue) {
+
+                highestValue = value;
+
+                winners = [player.name];
+
+            }
+
+            else if (value === highestValue) {
+
+                if (!winners.includes(player.name)) {
+
+                    winners.push(player.name);
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    /* No cards */
+
+    if (highestValue === 0) {
+
+        document.getElementById("winner").innerText =
+            "No cards have been dealt.";
+
+        return;
+
+    }
+
+
+    /* Find rank name */
+
+    let highestRank = "";
+
+    if (highestValue === 14) highestRank = "A";
+    else if (highestValue === 13) highestRank = "K";
+    else if (highestValue === 12) highestRank = "Q";
+    else if (highestValue === 11) highestRank = "J";
+    else highestRank = String(highestValue);
+
+
+    /* Display result */
+
+    if (winners.length === 1) {
+
+        document.getElementById("winner").innerText =
+            "🏆 " +
+            winners[0] +
+            " has the highest card: " +
+            highestRank;
+
+        addHistory(
+            "🏆 " +
+            winners[0] +
+            " has the highest card."
+        );
+
+    }
+
+    else {
+
+        document.getElementById("winner").innerText =
+            "🤝 Tie! " +
+            winners.join(" and ") +
+            " have the highest card: " +
+            highestRank;
+
+        addHistory(
+            "🤝 Tie between " +
+            winners.join(" and ") +
+            "."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   DISPLAY PLAYER HANDS
+===================================================== */
+
+function displayPlayers() {
+
+    const hands =
+        document.getElementById("hands");
+
+    hands.innerHTML = "";
+
+
+    for (let player of players) {
+
+        const playerBox =
+            document.createElement("div");
+
+        playerBox.className = "player";
+
+
+        const heading =
+            document.createElement("h3");
+
+        heading.innerText =
+            player.name +
+            " (" +
+            player.hand.length +
+            " cards)";
+
+
+        playerBox.appendChild(heading);
+
+
+        const cardsBox =
+            document.createElement("div");
+
+        cardsBox.className = "cards";
+
+
+        if (player.hand.length === 0) {
+
+            const empty =
+                document.createElement("p");
+
+            empty.innerText =
+                "No cards";
+
+            empty.style.color = "#aaa";
+
+            cardsBox.appendChild(empty);
+
+        }
+
+
+        for (let card of player.hand) {
+
+            const cardElement =
+                document.createElement("div");
+
+            cardElement.className = "card";
+
+
+            if (
+                card.suit === "♥" ||
+                card.suit === "♦"
+            ) {
+
+                cardElement.classList.add("red");
+
+            }
+
+            else {
+
+                cardElement.classList.add("black");
+
+            }
+
+
+            cardElement.innerHTML =
+                "<div>" +
+                card.rank +
+                "</div>" +
+                "<div>" +
+                card.suit +
+                "</div>";
+
+
+            cardsBox.appendChild(cardElement);
+
+        }
+
+
+        playerBox.appendChild(cardsBox);
+
+        hands.appendChild(playerBox);
+
+    }
+
+}
+
+
+/* =====================================================
+   UPDATE SCREEN
+===================================================== */
+
+function updateScreen() {
+
+    document.getElementById("remaining").innerText =
+        deck.length;
+
+
+    document.getElementById("dealt").innerText =
+        52 - deck.length;
+
+
+    document.getElementById("playerNumber").innerText =
+        players.length;
+
+
+    document.getElementById("roundNumber").innerText =
+        round;
+
+
+    document.getElementById("deckMessage").innerText =
+        deck.length +
+        " cards available";
+
+
+    const deckElement =
+        document.getElementById("deck");
+
+
+    if (deck.length === 0) {
+
+        deckElement.classList.add("emptyDeck");
+
+    }
+
+    else {
+
+        deckElement.classList.remove("emptyDeck");
+
+    }
+
+
+    displayPlayers();
+
+}
+
+
+/* =====================================================
+   ACTIVITY HISTORY
+===================================================== */
+
+function addHistory(message) {
+
+    const history =
+        document.getElementById("history");
+
+
+    const item =
+        document.createElement("p");
+
+
+    const time =
+        new Date().toLocaleTimeString();
+
+
+    item.innerText =
+        time +
+        " - " +
+        message;
+
+
+    history.prepend(item);
+
+}
+
+
+/* =====================================================
+   CLEAR HISTORY
+===================================================== */
+
+function clearHistory() {
+
+    document.getElementById("history").innerHTML =
+        "<p>History cleared.</p>";
+
+}
+
+
+/* =====================================================
+   RESET GAME
+===================================================== */
+
+function resetGame() {
+
+    createDeck();
+
+    createPlayers();
+
+    round = 0;
+
+
+    document.getElementById("winner").innerText =
+        "No result yet.";
+
+
+    addHistory(
+        "🔄 Game reset. Fresh 52-card deck created."
+    );
+
+
+    updateScreen();
+
+}
+
+
+/* =====================================================
+   BUTTON CONNECTIONS
+===================================================== */
+
+shuffleBtn.addEventListener(
+    "click",
+    shuffleDeck
+);
+
+
+dealBtn.addEventListener(
+    "click",
+    dealCards
+);
+
+
+drawBtn.addEventListener(
+    "click",
+    drawCard
+);
+
+
+returnBtn.addEventListener(
+    "click",
+    returnCards
+);
+
+
+winnerBtn.addEventListener(
+    "click",
+    findHighestCard
+);
+
+
+resetBtn.addEventListener(
+    "click",
+    resetGame
+);
+
+
+clearBtn.addEventListener(
+    "click",
+    clearHistory
+);
+
+
+/* =====================================================
+   PLAYER NUMBER CHANGE
+===================================================== */
+
+playersSelect.addEventListener(
+    "change",
+    function() {
+
+        createPlayers();
+
+        updateScreen();
+
+    }
+);
+
+
+/* =====================================================
+   START GAME
+===================================================== */
+
+createDeck();
+
+createPlayers();
+
+updateScreen();
+
+</script>
+
+</body>
+</html>
