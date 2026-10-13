@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College FAQ Portal</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .faq {
+            background-color: white;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        .question {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            background-color: #2563eb;
+            color: white;
+            font-size: 17px;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .question:hover {
+            background-color: #1d4ed8;
+        }
+
+        .answer {
+            display: none;
+            padding: 18px;
+            color: #444;
+            line-height: 1.6;
+            background-color: #f8fafc;
+        }
+
+        .answer.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>🎓 Student Help Portal</h1>
+        <p class="subtitle">Frequently Asked Questions</p>
+
+        <div class="faq">
+            <button class="question">1. How can I apply for admission?</button>
+            <div class="answer">
+                Students can apply for admission through the college admission portal.
+                Fill in the required details and upload the necessary documents.
+            </div>
+        </div>
+
+        <div class="faq">
+            <button class="question">2. Where can I find the college timetable?</button>
+            <div class="answer">
+                The latest timetable is available on the college website and notice board.
+            </div>
+        </div>
+
+        <div class="faq">
+            <button class="question">3. How can I contact the department?</button>
+            <div class="answer">
+                Students can contact the department office during working hours
+                through the official department email or phone number.
+            </div>
+        </div>
+
+        <div class="faq">
+            <button class="question">4. Where can I get study materials?</button>
+            <div class="answer">
+                Study materials are provided through the college learning portal,
+                department resources, and faculty members.
+            </div>
+        </div>
+
+        <div class="faq">
+            <button class="question">5. How can I check my examination schedule?</button>
+            <div class="answer">
+                Examination schedules are published on the college website and
+                displayed on the official notice board.
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Select all FAQ questions
+        const questions = document.querySelectorAll(".question");
+
+        // Add event listener to every question
+        questions.forEach(function(question) {
+
+            question.addEventListener("click", function() {
+
+                // Find the answer related to the clicked question
+                const answer = question.nextElementSibling;
+
+                // Display or hide the answer
+                answer.classList.toggle("show");
+            });
+
+        });
+    </script>
+
+</body>
+</html>

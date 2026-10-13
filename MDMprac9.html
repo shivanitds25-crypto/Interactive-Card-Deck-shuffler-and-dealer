@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal To-Do List</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-purple-100 min-h-screen flex items-center justify-center p-5">
+
+    <div class="bg-white w-full max-w-md p-6 rounded-2xl shadow-lg">
+
+        <!-- Heading -->
+        <h1 class="text-3xl font-bold text-center text-purple-700 mb-2">
+            My To-Do List
+        </h1>
+
+        <p class="text-center text-gray-500 mb-6">
+            Organize your daily tasks
+        </p>
+
+        <!-- Input Section -->
+        <div class="flex gap-2 mb-5">
+            <input
+                type="text"
+                id="taskInput"
+                placeholder="Enter a task..."
+                class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            >
+
+            <button
+                onclick="addTask()"
+                class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">
+                Add
+            </button>
+        </div>
+
+        <!-- Task List -->
+        <ul id="taskList" class="space-y-3"></ul>
+
+    </div>
+
+    <script>
+        function addTask() {
+
+            let input = document.getElementById("taskInput");
+            let taskText = input.value.trim();
+
+            // Check if input is empty
+            if (taskText === "") {
+                alert("Please enter a task!");
+                return;
+            }
+
+            // Create list item
+            let li = document.createElement("li");
+
+            li.className =
+                "flex items-center gap-3 bg-purple-50 p-3 rounded-lg border border-purple-200";
+
+            // Create checkbox
+            let checkbox = document.createElement("input");
+
+            checkbox.type = "checkbox";
+            checkbox.className =
+                "w-5 h-5 accent-purple-600 cursor-pointer";
+
+            // Create task text
+            let span = document.createElement("span");
+
+            span.textContent = taskText;
+            span.className = "flex-1 text-gray-700";
+
+            // Mark task as completed when checkbox is checked
+            checkbox.addEventListener("change", function () {
+
+                if (checkbox.checked) {
+                    span.classList.add("line-through");
+                    span.classList.add("text-gray-400");
+                } else {
+                    span.classList.remove("line-through");
+                    span.classList.remove("text-gray-400");
+                }
+
+            });
+
+            // Delete button
+            let deleteButton = document.createElement("button");
+
+            deleteButton.textContent = "Delete";
+
+            deleteButton.className =
+                "bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600";
+
+            deleteButton.onclick = function () {
+                li.remove();
+            };
+
+            // Add checkbox, task and button to list item
+            li.appendChild(checkbox);
+            li.appendChild(span);
+            li.appendChild(deleteButton);
+
+            // Add task to the list
+            document.getElementById("taskList").appendChild(li);
+
+            // Clear input
+            input.value = "";
+            input.focus();
+        }
+
+        // Add task when Enter key is pressed
+        document.getElementById("taskInput").addEventListener("keypress", function(event) {
+
+            if (event.key === "Enter") {
+                addTask();
+            }
+
+        });
+    </script>
+
+</body>
+</html>
+

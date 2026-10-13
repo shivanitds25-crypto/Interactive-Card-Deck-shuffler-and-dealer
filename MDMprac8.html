@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration Form</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #dbeafe, #fce7f3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background: white;
+            width: 380px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 11px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        #success {
+            color: green;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="form-container">
+        <h2>Student Registration</h2>
+
+        <form id="registrationForm">
+
+            <label>Full Name</label>
+            <input type="text" id="name" placeholder="Enter your name">
+            <div class="error" id="nameError"></div>
+
+            <label>Email</label>
+            <input type="text" id="email" placeholder="Enter your email">
+            <div class="error" id="emailError"></div>
+
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter password">
+            <div class="error" id="passwordError"></div>
+
+            <label>Mobile Number</label>
+            <input type="text" id="mobile" placeholder="Enter 10-digit mobile number">
+            <div class="error" id="mobileError"></div>
+
+            <button type="submit">Register</button>
+
+            <div id="success"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("registrationForm").addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            let name = document.getElementById("name").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value;
+            let mobile = document.getElementById("mobile").value.trim();
+
+            let valid = true;
+
+            // Clear previous messages
+            document.getElementById("nameError").textContent = "";
+            document.getElementById("emailError").textContent = "";
+            document.getElementById("passwordError").textContent = "";
+            document.getElementById("mobileError").textContent = "";
+            document.getElementById("success").textContent = "";
+
+            // Name validation
+            if (name === "") {
+                document.getElementById("nameError").textContent =
+                    "Name is required.";
+                valid = false;
+            }
+
+            // Email validation
+            let emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+
+            if (email === "") {
+                document.getElementById("emailError").textContent =
+                    "Email is required.";
+                valid = false;
+            } 
+            else if (!emailPattern.test(email)) {
+                document.getElementById("emailError").textContent =
+                    "Enter a valid email address.";
+                valid = false;
+            }
+
+            // Password validation
+            if (password === "") {
+                document.getElementById("passwordError").textContent =
+                    "Password is required.";
+                valid = false;
+            } 
+            else if (password.length < 6) {
+                document.getElementById("passwordError").textContent =
+                    "Password must be at least 6 characters.";
+                valid = false;
+            }
+
+            // Mobile number validation
+            let mobilePattern = /^[0-9]{10}$/;
+
+            if (mobile === "") {
+                document.getElementById("mobileError").textContent =
+                    "Mobile number is required.";
+                valid = false;
+            } 
+            else if (!mobilePattern.test(mobile)) {
+                document.getElementById("mobileError").textContent =
+                    "Enter a valid 10-digit mobile number.";
+                valid = false;
+            }
+
+            // Successful submission
+            if (valid) {
+                document.getElementById("success").textContent =
+                    "Registration successful!";
+                
+                document.getElementById("registrationForm").reset();
+            }
+        });
+    </script>
+
+</body>
+</html>
+

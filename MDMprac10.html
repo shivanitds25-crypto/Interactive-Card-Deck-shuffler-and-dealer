@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Daily Health Tracker</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-green-50 to-blue-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="text-center py-8">
+        <h1 class="text-4xl font-bold text-green-700">
+            🩺 Daily Health Tracker
+        </h1>
+
+        <p class="text-gray-600 mt-2">
+            Track your daily habits and check your wellness level
+        </p>
+    </header>
+
+
+    <main class="max-w-5xl mx-auto px-4 pb-10">
+
+        <div class="grid md:grid-cols-2 gap-6">
+
+            <!-- Input Section -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-5">
+                    Enter Today's Details
+                </h2>
+
+                <!-- Water -->
+                <label class="block font-medium text-gray-700 mb-2">
+                    💧 Water Intake (Glasses)
+                </label>
+
+                <input
+                    type="number"
+                    id="water"
+                    min="0"
+                    placeholder="Example: 8"
+                    class="w-full border rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+
+
+                <!-- Sleep -->
+                <label class="block font-medium text-gray-700 mb-2">
+                    😴 Sleep (Hours)
+                </label>
+
+                <input
+                    type="number"
+                    id="sleep"
+                    min="0"
+                    step="0.5"
+                    placeholder="Example: 7"
+                    class="w-full border rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+
+
+                <!-- Steps -->
+                <label class="block font-medium text-gray-700 mb-2">
+                    🚶 Steps Walked
+                </label>
+
+                <input
+                    type="number"
+                    id="steps"
+                    min="0"
+                    placeholder="Example: 6000"
+                    class="w-full border rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+
+
+                <!-- Mood -->
+                <label class="block font-medium text-gray-700 mb-2">
+                    😊 Today's Mood
+                </label>
+
+                <select
+                    id="mood"
+                    class="w-full border rounded-lg p-3 mb-6 focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+                    <option value="3">Happy 😊</option>
+                    <option value="2">Okay 🙂</option>
+                    <option value="1">Stressed 😟</option>
+                </select>
+
+
+                <!-- Buttons -->
+                <div class="flex gap-3">
+
+                    <button
+                        onclick="calculateHealth()"
+                        class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition"
+                    >
+                        Check Health
+                    </button>
+
+                    <button
+                        onclick="resetData()"
+                        class="bg-gray-500 text-white px-5 py-3 rounded-lg hover:bg-gray-600 transition"
+                    >
+                        Reset
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Result Section -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col justify-center">
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-5 text-center">
+                    Your Wellness Result
+                </h2>
+
+                <div class="text-center">
+
+                    <div
+                        id="score"
+                        class="text-6xl font-bold text-green-600 mb-3"
+                    >
+                        0
+                    </div>
+
+                    <p class="text-gray-500 mb-5">
+                        Wellness Score
+                    </p>
+
+                    <div
+                        id="result"
+                        class="bg-gray-100 rounded-xl p-5 text-lg font-semibold text-gray-600"
+                    >
+                        Enter your details and click
+                        <b>Check Health</b>.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Health Tips -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mt-6">
+
+            <h2 class="text-2xl font-bold text-green-700 mb-4">
+                🌱 Daily Health Tips
+            </h2>
+
+            <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+
+                <div class="bg-blue-50 p-4 rounded-xl text-center">
+                    <div class="text-3xl">💧</div>
+                    <p class="font-semibold mt-2">Stay Hydrated</p>
+                    <p class="text-sm text-gray-600">
+                        Drink enough water throughout the day.
+                    </p>
+                </div>
+
+                <div class="bg-purple-50 p-4 rounded-xl text-center">
+                    <div class="text-3xl">😴</div>
+                    <p class="font-semibold mt-2">Sleep Well</p>
+                    <p class="text-sm text-gray-600">
+                        Maintain a regular sleep schedule.
+                    </p>
+                </div>
+
+                <div class="bg-green-50 p-4 rounded-xl text-center">
+                    <div class="text-3xl">🚶</div>
+                    <p class="font-semibold mt-2">Stay Active</p>
+                    <p class="text-sm text-gray-600">
+                        Include regular physical activity.
+                    </p>
+                </div>
+
+                <div class="bg-yellow-50 p-4 rounded-xl text-center">
+                    <div class="text-3xl">😊</div>
+                    <p class="font-semibold mt-2">Stay Positive</p>
+                    <p class="text-sm text-gray-600">
+                        Take care of your mental well-being.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        function calculateHealth() {
+
+            let water = Number(document.getElementById("water").value);
+            let sleep = Number(document.getElementById("sleep").value);
+            let steps = Number(document.getElementById("steps").value);
+            let mood = Number(document.getElementById("mood").value);
+
+            if (water === 0 || sleep === 0 || steps === 0) {
+
+                alert("Please enter all health details.");
+
+                return;
+            }
+
+
+            let healthScore = 0;
+
+
+            // Water score
+            if (water >= 8) {
+                healthScore += 25;
+            } else if (water >= 5) {
+                healthScore += 15;
+            } else {
+                healthScore += 5;
+            }
+
+
+            // Sleep score
+            if (sleep >= 7 && sleep <= 9) {
+                healthScore += 25;
+            } else if (sleep >= 5) {
+                healthScore += 15;
+            } else {
+                healthScore += 5;
+            }
+
+
+            // Steps score
+            if (steps >= 8000) {
+                healthScore += 25;
+            } else if (steps >= 5000) {
+                healthScore += 15;
+            } else {
+                healthScore += 5;
+            }
+
+
+            // Mood score
+            healthScore += mood * 5;
+
+
+            document.getElementById("score").textContent =
+                healthScore + "/100";
+
+
+            let result = document.getElementById("result");
+
+
+            if (healthScore >= 80) {
+
+                result.textContent =
+                    "Excellent! 🌟 Your daily habits look healthy.";
+
+                result.className =
+                    "bg-green-100 text-green-700 rounded-xl p-5 text-lg font-semibold";
+
+            }
+
+            else if (healthScore >= 60) {
+
+                result.textContent =
+                    "Good job! 👍 Keep improving your daily habits.";
+
+                result.className =
+                    "bg-yellow-100 text-yellow-700 rounded-xl p-5 text-lg font-semibold";
+
+            }
+
+            else {
+
+                result.textContent =
+                    "Needs Improvement 💪 Try to focus more on your daily habits.";
+
+                result.className =
+                    "bg-red-100 text-red-700 rounded-xl p-5 text-lg font-semibold";
+
+            }
+
+        }
+
+
+        function resetData() {
+
+            document.getElementById("water").value = "";
+            document.getElementById("sleep").value = "";
+            document.getElementById("steps").value = "";
+            document.getElementById("mood").value = "3";
+
+            document.getElementById("score").textContent = "0";
+
+            document.getElementById("result").textContent =
+                "Enter your details and click Check Health.";
+
+            document.getElementById("result").className =
+                "bg-gray-100 rounded-xl p-5 text-lg font-semibold text-gray-600";
+        }
+
+    </script>
+
+</body>
+
+</html>
